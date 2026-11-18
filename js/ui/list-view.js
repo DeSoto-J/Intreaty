@@ -21,7 +21,7 @@ const EMPTY = {
   'requests-answered': {
     icon: 'checkCircle',
     title: 'Remember your answered prayers here',
-    text: 'When a prayer is answered, mark it answered and it will be kept here.',
+    text: 'When God answers a prayer, tap Mark answered and it will be kept here.',
   },
   thanks: {
     icon: 'heart',
