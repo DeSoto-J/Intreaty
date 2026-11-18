@@ -2,3 +2,7 @@
 Thumbs.db
 .env
 node_modules/
+.claude/
+
+# Never commit prayer backups — they're private.
+intreaty-backup-*.json
