@@ -20,7 +20,7 @@ const EMPTY = {
   },
   'requests-answered': {
     icon: 'checkCircle',
-    title: 'No answered prayers yet',
+    title: 'Remember your answered prayers here',
     text: 'When a prayer is answered, mark it answered and it will be kept here.',
   },
   thanks: {

@@ -4,7 +4,7 @@
 // IMPORTANT: when you publish a change, raise VERSION below (and APP_VERSION
 // in js/version.js). That's how phones know a new version exists.
 
-const VERSION = '1.1.0';
+const VERSION = '1.1.1';
 const CACHE = `intreaty-${VERSION}`;
 
 const FILES = [
