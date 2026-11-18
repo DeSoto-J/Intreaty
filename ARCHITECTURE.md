@@ -26,6 +26,7 @@ Entry:
 | `status` | `"active"` / `"answered"` (requests only) |
 | `answeredOn`, `answerNote` | filled in when answered |
 | `linkedEntryId` | connects an answered request and its thanksgiving, both ways |
+| `starred` | `true` to flag an entry; "Starred first" sorts these to the top (added in 1.1.0; older backups read as `false`) |
 | `visibility`, `sharedWith` | `"private"` and `[]` for now; reserved for sharing |
 | `createdAt`, `updatedAt` | ISO timestamps; `updatedAt` decides which copy wins in a merge |
 | `deletedAt` | set instead of erasing, so Undo works and deletes sync correctly |

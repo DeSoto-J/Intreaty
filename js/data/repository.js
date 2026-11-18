@@ -127,6 +127,15 @@ export class Repository {
     return next;
   }
 
+  async toggleStar(id) {
+    const cur = this.getEntry(id);
+    if (!cur) return null;
+    const next = { ...cur, starred: !cur.starred, updatedAt: nowISO() };
+    await this._put('entries', [next]);
+    this._emit();
+    return next;
+  }
+
   async deleteEntry(id) {
     const cur = this.getEntry(id);
     if (!cur) return;

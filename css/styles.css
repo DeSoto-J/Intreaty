@@ -26,6 +26,7 @@
   --backdrop: rgba(40, 30, 20, 0.35);
   --tabbar-bg: rgba(251, 248, 243, 0.82);
   --toast-action: #e8c9a6;
+  --star: #c08a2e;
 
   --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -62,6 +63,7 @@
     --backdrop: rgba(0, 0, 0, 0.55);
     --tabbar-bg: rgba(32, 28, 24, 0.82);
   --toast-action: #7a5535;
+  --star: #e2b65e;
   }
 }
 :root[data-theme="dark"] {
@@ -88,6 +90,7 @@
   --backdrop: rgba(0, 0, 0, 0.55);
   --tabbar-bg: rgba(32, 28, 24, 0.82);
   --toast-action: #7a5535;
+  --star: #e2b65e;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -310,6 +313,46 @@ svg { display: block; }
   font-size: 0.78rem; color: var(--muted);
 }
 .linked-tag svg { width: 14px; height: 14px; }
+
+/* ---------- Stars and sorting ---------- */
+.card { position: relative; }
+.cards.static .card { animation: none; }
+.card .card-meta { padding-right: 34px; }
+.star-btn {
+  position: absolute;
+  top: 6px; right: 6px;
+  z-index: 1;
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  border: 0; border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  transition: transform 0.2s var(--ease), color 0.2s;
+}
+.star-btn svg { width: 20px; height: 20px; }
+.star-btn:active { transform: scale(0.82); }
+.star-btn[aria-pressed="true"], .sheet-star[aria-pressed="true"] { color: var(--star); }
+.star-btn[aria-pressed="true"] svg, .sheet-star[aria-pressed="true"] svg { fill: currentColor; }
+.card.is-starred .card-btn { border-color: color-mix(in srgb, var(--star) 45%, var(--border)); }
+.head-actions { display: flex; gap: 8px; flex: none; }
+
+.sub-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; }
+.sub-row .view-sub { margin: 0; }
+.sort-btn {
+  flex: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 0.82rem; font-weight: 600;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s var(--ease);
+}
+.sort-btn:active { transform: scale(0.96); }
+.sort-btn svg { width: 15px; height: 15px; }
+.sort-btn[aria-pressed="true"] { background: var(--accent-soft); border-color: transparent; color: var(--text); }
+.sort-btn[aria-pressed="true"] svg { fill: currentColor; color: var(--star); }
 
 /* ---------- Empty state ---------- */
 .empty {

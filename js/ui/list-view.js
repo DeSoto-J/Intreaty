@@ -35,7 +35,9 @@ function cardHTML(repo, e, i) {
   const answered = e.status === Status.ANSWERED;
   const fromPrayer = e.kind === Kind.THANKSGIVING && e.linkedEntryId && repo.getEntry(e.linkedEntryId);
   return `
-    <li class="card" style="--i:${Math.min(i, 12)}">
+    <li class="card${e.starred ? ' is-starred' : ''}" style="--i:${Math.min(i, 12)}">
+      <button class="star-btn" type="button" data-star="${esc(e.id)}" aria-pressed="${Boolean(e.starred)}"
+        aria-label="${e.starred ? 'Remove star from' : 'Star'} ${esc(e.title)}">${icon('star')}</button>
       <button class="card-btn" type="button" data-open="${esc(e.id)}">
         <div class="card-meta">
           <span class="cat"><span class="dot" style="--c:${categoryColor(cat.id)}"></span>${esc(cat.name)}</span>
@@ -86,7 +88,14 @@ export function renderList({ repo, state }) {
       </button>`),
   ].join('');
 
-  const list = filter === 'all' ? base : base.filter((e) => e.categoryId === filter);
+  let list = filter === 'all' ? base : base.filter((e) => e.categoryId === filter);
+  // "Starred first" keeps the usual newest-first order within each group.
+  if (state.starredFirst) list = [...list.filter((e) => e.starred), ...list.filter((e) => !e.starred)];
+
+  const sortBtn = $('#sort-btn');
+  sortBtn.hidden = base.length === 0;
+  sortBtn.setAttribute('aria-pressed', String(state.starredFirst));
+  sortBtn.innerHTML = `${icon('star')}Starred first`;
 
   const n = base.length;
   $('#view-sub').textContent =
@@ -94,7 +103,11 @@ export function renderList({ repo, state }) {
     : key === 'requests-answered' ? (n ? `${plural(n, 'prayer')} answered` : 'Answered prayers are kept here.')
     : (n ? `${plural(n, 'blessing')} remembered` : 'The good things you are grateful for.');
 
-  $('#entry-list').innerHTML = list.map((e, i) => cardHTML(repo, e, i)).join('');
+  const ul = $('#entry-list');
+  // Cards glide in when you switch lists, but not on every small change like tapping a star.
+  ul.classList.toggle('static', !state.animateList);
+  state.animateList = false;
+  ul.innerHTML = list.map((e, i) => cardHTML(repo, e, i)).join('');
 
   const empty = $('#empty-state');
   empty.hidden = list.length > 0;

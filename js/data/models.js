@@ -87,6 +87,8 @@ export function createEntry(fields, ownerId = LOCAL_OWNER_ID) {
     answerNote: '',
     // Links an answered request and the thanksgiving made from it (both ways).
     linkedEntryId: fields.linkedEntryId ?? null,
+    // Starred entries can be sorted to the top of a list.
+    starred: false,
     // Future sharing: private by default, shared per entry later.
     visibility: Visibility.PRIVATE,
     sharedWith: [],
@@ -148,6 +150,7 @@ export function normalizeEntry(raw, ownerId = LOCAL_OWNER_ID) {
     answeredOn: answered ? (isDateString(raw.answeredOn) ? raw.answeredOn : todayLocal()) : null,
     answerNote: answered ? cleanText(raw.answerNote, LIMITS.note) : '',
     linkedEntryId: typeof raw.linkedEntryId === 'string' ? raw.linkedEntryId : null,
+    starred: raw.starred === true,
     visibility: Visibility.PRIVATE,
     sharedWith: [],
     createdAt,

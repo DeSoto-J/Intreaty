@@ -41,7 +41,11 @@ export function openDetail(ctx, id) {
         <span class="cat"><span class="dot" style="--c:${categoryColor(cat.id)}"></span>${esc(cat.name)}</span>
         <span>${isRequest ? 'Added' : 'Dated'} ${esc(formatDate(e.date))}</span>
       </div>
-      ${closeBtn}
+      <div class="head-actions">
+        <button type="button" class="icon-btn close-btn sheet-star" data-act="star" aria-pressed="${Boolean(e.starred)}"
+          aria-label="${e.starred ? 'Remove star' : 'Star this entry'}">${icon('star')}</button>
+        ${closeBtn}
+      </div>
     </div>
     <h2 class="detail-title" id="sheet-title">${esc(e.title)}</h2>
     ${e.details ? `<p class="detail-body">${esc(e.details)}</p>` : ''}
@@ -63,7 +67,11 @@ export function openDetail(ctx, id) {
       box.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click', async () => {
         const act = b.dataset.act;
         try {
-          if (act === 'answer') openAnswer(ctx, id);
+          if (act === 'star') {
+            const updated = await repo.toggleStar(id);
+            b.setAttribute('aria-pressed', String(Boolean(updated?.starred)));
+            b.setAttribute('aria-label', updated?.starred ? 'Remove star' : 'Star this entry');
+          } else if (act === 'answer') openAnswer(ctx, id);
           else if (act === 'edit') openForm(ctx, { id });
           else if (act === 'reopen') {
             await repo.reopen(id);

@@ -25,10 +25,20 @@ const repo = new Repository(new LocalAdapter(), { appVersion: APP_VERSION });
 const state = {
   route: parseRoute(),
   filters: {},          // chosen category filter for each list
+  starredFirst: readStarredFirst(),
+  animateList: true,    // let cards glide in on the next draw
   lastBackup: null,
   persisted: null,
 };
 const ctx = { repo, state };
+
+// The "Starred first" choice is remembered on this device.
+function readStarredFirst() {
+  try { return localStorage.getItem('intreaty.starredFirst') === '1'; } catch { return false; }
+}
+function saveStarredFirst(on) {
+  try { localStorage.setItem('intreaty.starredFirst', on ? '1' : '0'); } catch { /* ignore */ }
+}
 
 function parseRoute() {
   const [view, sub] = location.hash.replace(/^#\/?/, '').split('/');
@@ -65,6 +75,18 @@ function bindEvents() {
     openForm(ctx, { kind: state.route.view === 'thanks' ? Kind.THANKSGIVING : Kind.REQUEST }));
 
   $('#view-list').addEventListener('click', (ev) => {
+    const star = ev.target.closest('[data-star]');
+    if (star) {
+      repo.toggleStar(star.dataset.star).catch(() => toast('Could not save that star.'));
+      return;
+    }
+    if (ev.target.closest('#sort-btn')) {
+      state.starredFirst = !state.starredFirst;
+      saveStarredFirst(state.starredFirst);
+      state.animateList = true;
+      renderList(ctx);
+      return;
+    }
     const card = ev.target.closest('[data-open]');
     if (card) return openDetail(ctx, card.dataset.open);
     const status = ev.target.closest('[data-status]');
@@ -75,12 +97,14 @@ function bindEvents() {
     const chip = ev.target.closest('[data-filter]');
     if (chip) {
       state.filters[listKey(state.route)] = chip.dataset.filter;
+      state.animateList = true;
       renderList(ctx);
     }
   });
 
   addEventListener('hashchange', () => {
     state.route = parseRoute();
+    state.animateList = true;
     render();
     scrollTo({ top: 0 });
   });

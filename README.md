@@ -4,6 +4,7 @@ A simple, private prayer list that installs to your phone's home screen.
 
 - Keep **Prayer Requests** and **Thanksgivings** in one place
 - Sort entries into categories (Family, Health, Church, Friends, Work, Other, or your own)
+- **Star** important entries and sort them to the top with **Starred first**
 - Mark a request **answered**, write down how, and add it to Thanksgivings
 - Works offline, has light and dark mode, and saves everything on your device
 - Save and restore a backup file
