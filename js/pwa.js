@@ -42,8 +42,10 @@ addEventListener('appinstalled', () => {
 export function registerServiceWorker({ onUpdateReady } = {}) {
   if (!('serviceWorker' in navigator)) return;
   let reloading = false;
+  // On the very first visit there's no old version to replace, so don't reload.
+  const hadController = Boolean(navigator.serviceWorker.controller);
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (reloading) return;
+    if (reloading || !hadController) return;
     reloading = true;
     location.reload();
   });
