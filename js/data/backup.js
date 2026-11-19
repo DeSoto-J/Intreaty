@@ -11,13 +11,13 @@ export const BACKUP_VERSION = 1;
 
 export class BackupError extends Error {}
 
-export function buildBackup({ entries, categories, appVersion }) {
+export function buildBackup({ entries, categories, verseFavorites = [], appVersion }) {
   return {
     format: BACKUP_FORMAT,
     version: BACKUP_VERSION,
     appVersion,
     exportedAt: nowISO(),
-    data: { entries, categories },
+    data: { entries, categories, verseFavorites },
   };
 }
 
@@ -49,10 +49,16 @@ export function parseBackup(text, ownerId) {
   const rawCategories = Array.isArray(obj.data?.categories) ? obj.data.categories : [];
   const entries = rawEntries.map((e) => normalizeEntry(e, ownerId)).filter(Boolean);
   const categories = rawCategories.map((c) => normalizeCategory(c, ownerId)).filter(Boolean);
+  // Favorite verses were added in app version 1.2.0; older backups have none.
+  const rawFavs = Array.isArray(obj.data?.verseFavorites) ? obj.data.verseFavorites : [];
+  const verseFavorites = rawFavs
+    .filter((f) => f && typeof f.verseId === 'string' && f.verseId.length <= 40 && typeof f.updatedAt === 'string')
+    .map((f) => ({ verseId: f.verseId, favorite: f.favorite === true, updatedAt: f.updatedAt }));
   return {
     exportedAt: typeof obj.exportedAt === 'string' ? obj.exportedAt : null,
     entries,
     categories,
+    verseFavorites,
     invalid: rawEntries.length - entries.length + (rawCategories.length - categories.length),
   };
 }

@@ -613,6 +613,110 @@ svg { display: block; }
 .install-steps svg { display: inline-block; width: 18px; height: 18px; vertical-align: -3px; color: var(--accent); }
 .about { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 8px 0 0; }
 .about .brand-name { display: block; color: var(--text); font-size: 1.1rem; }
+.about-verse { margin: 10px auto 14px; max-width: 30ch; }
+.about-verse blockquote {
+  margin: 0;
+  font-family: var(--font-serif); font-style: italic;
+  font-size: 0.98rem; line-height: 1.5; color: var(--text-2);
+}
+.about-verse figcaption { margin-top: 4px; font-size: 0.8rem; letter-spacing: 0.04em; }
+
+/* ---------- Verse of the day ---------- */
+.top-actions { display: flex; align-items: center; gap: 8px; }
+.verse-btn {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 42px; padding: 0 14px 0 12px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  font-weight: 600; font-size: 0.88rem;
+  transition: transform 0.2s var(--ease);
+}
+.verse-btn:active { transform: scale(0.95); }
+.verse-btn-icon { width: 19px; height: 19px; color: var(--accent); }
+.verse-btn-icon svg { width: 100%; height: 100%; }
+.verse-btn.has-new::after {
+  content: "";
+  position: absolute; top: 6px; right: 7px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--star);
+  box-shadow: 0 0 0 2px var(--surface);
+}
+.verse-eyebrow { display: inline-flex; align-items: center; gap: 7px; margin: 0; font-weight: 600; }
+.verse-eyebrow svg { width: 16px; height: 16px; color: var(--accent); }
+.verse {
+  margin: 4px 0 0;
+  padding: 26px 22px 20px;
+  border-radius: var(--radius);
+  background:
+    radial-gradient(120% 90% at 0% 0%, var(--bg-glow), transparent 60%),
+    var(--accent-soft);
+  position: relative;
+}
+.verse::before {
+  content: "\201C";
+  position: absolute; top: -6px; left: 14px;
+  font-family: var(--font-serif); font-size: 4.2rem; line-height: 1;
+  color: var(--accent); opacity: 0.35;
+}
+.verse-swap { animation: rise 0.35s var(--ease) both; }
+.verse-text {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.2rem, 5.2vw, 1.4rem);
+  line-height: 1.55;
+  color: var(--text);
+  text-wrap: pretty;
+}
+.verse-ref {
+  margin-top: 14px;
+  display: flex; align-items: baseline; gap: 8px;
+  font-weight: 700; color: var(--accent-strong);
+}
+.verse-ref span { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; color: var(--muted); }
+.verse-tools { display: flex; gap: 8px; margin-top: 14px; }
+.verse-tool {
+  flex: 1;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  font-weight: 600; font-size: 0.88rem;
+  transition: transform 0.15s var(--ease), color 0.2s, background 0.2s;
+}
+.verse-tool:active { transform: scale(0.95); }
+.verse-tool svg { width: 18px; height: 18px; }
+.heart-btn[aria-pressed="true"] { color: var(--danger); background: var(--danger-soft); border-color: transparent; }
+.heart-btn[aria-pressed="true"] svg { fill: currentColor; animation: pop 0.3s var(--ease); }
+.verse-back { justify-self: center; }
+.count-pill {
+  display: inline-grid; place-items: center;
+  min-width: 22px; height: 22px; padding: 0 6px;
+  border-radius: 99px;
+  background: var(--accent-soft); color: var(--accent-strong);
+  font-size: 0.78rem;
+}
+.verse-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.verse-row {
+  width: 100%; text-align: left;
+  display: grid; gap: 4px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+.verse-row-ref { font-weight: 700; color: var(--accent-strong); font-size: 0.9rem; }
+.verse-row-text {
+  font-family: var(--font-serif); color: var(--text-2); line-height: 1.45;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.verse-empty { padding: 12px 0 0; }
+@keyframes pop { 50% { transform: scale(1.3); } }
 
 /* ---------- Toast ---------- */
 .toast {

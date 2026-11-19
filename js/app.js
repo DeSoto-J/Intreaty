@@ -15,6 +15,7 @@ import { applyTheme, toggleTheme, effectiveTheme, onThemeChange } from './ui/the
 import { renderList, listKey } from './ui/list-view.js';
 import { openDetail, openForm } from './ui/entry-sheets.js';
 import { renderSettings, bindSettings } from './ui/settings-view.js';
+import { openVerseOfDay, updateVerseDot } from './ui/verse-sheet.js';
 import * as pwa from './pwa.js';
 import { APP_VERSION } from './version.js';
 
@@ -71,6 +72,10 @@ function updateThemeButton() {
 
 function bindEvents() {
   $('#theme-toggle').addEventListener('click', toggleTheme);
+  $('#verse-btn').addEventListener('click', () =>
+    openVerseOfDay(ctx).catch(() => toast('Could not open the verse.')));
+  // If the app stays open past midnight, show the "new verse" dot again.
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) updateVerseDot(); });
   $('#add-btn').addEventListener('click', () =>
     openForm(ctx, { kind: state.route.view === 'thanks' ? Kind.THANKSGIVING : Kind.REQUEST }));
 
@@ -155,6 +160,7 @@ async function init() {
   repo.subscribe(render);
   bindEvents();
   render();
+  updateVerseDot();
 
   pwa.registerServiceWorker({
     onUpdateReady: (apply) => toast('A new version of Intreaty is ready', {

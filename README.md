@@ -6,6 +6,7 @@ A simple, private prayer list that installs to your phone's home screen.
 - Sort entries into categories (Family, Health, Church, Friends, Work, Other, or your own)
 - **Star** important entries and sort them to the top with **Starred first**
 - Mark a request **answered**, write down how, and add it to Thanksgivings
+- **Verse of the day**: a King James verse about prayer, with **Another verse**, Copy/Share, and a heart to save favorites (saved verses come back more often)
 - Works offline, has light and dark mode, and saves everything on your device
 - Save and restore a backup file
 
@@ -38,6 +39,7 @@ js/
     models.js           what an entry and a category look like
     repository.js       the rules (add, edit, answer, delete, import…)
     backup.js           reading and writing backup files
+    verses.js           the verse-of-the-day list and how each day's verse is picked
   storage/
     local-adapter.js    saving on this device (IndexedDB)
   ui/                   the screens and slide-up panels

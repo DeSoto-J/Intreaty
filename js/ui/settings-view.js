@@ -9,6 +9,7 @@ import { openSheet, closeSheet, confirmSheet } from './sheet.js';
 import { getThemePref, setThemePref } from './theme.js';
 import * as pwa from '../pwa.js';
 import { APP_VERSION } from '../version.js';
+import { getVerse, APP_VERSE_ID } from '../data/verses.js';
 
 const THEMES = [['system', 'Automatic'], ['light', 'Light'], ['dark', 'Dark']];
 
@@ -113,6 +114,10 @@ export function renderSettings(ctx) {
 
     <div class="about">
       <span class="brand-name">Intreaty</span>
+      <figure class="about-verse">
+        <blockquote>“${esc(getVerse(APP_VERSE_ID).text)}”</blockquote>
+        <figcaption>${esc(getVerse(APP_VERSE_ID).ref)}</figcaption>
+      </figure>
       Version ${APP_VERSION} · Private by design — nothing leaves your device.
     </div>`;
 }

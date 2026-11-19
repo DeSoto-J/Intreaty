@@ -14,6 +14,10 @@ import {
 } from './models.js';
 import { buildBackup } from './backup.js';
 
+// Favorite verses are a short list, so they're kept in the "meta" store.
+// With accounts they would become their own table, like entries.
+const VERSE_FAVORITES_KEY = 'verseFavorites';
+
 const BUILT_IN_ORDER = BUILT_IN_CATEGORIES.map((c) => c.id);
 const sameName = (a, b) => a.trim().toLocaleLowerCase() === b.trim().toLocaleLowerCase();
 
@@ -24,6 +28,7 @@ export class Repository {
     this.appVersion = appVersion;
     this.entries = new Map();
     this.categories = new Map();
+    this.verseFavorites = new Map(); // verseId -> { verseId, favorite, updatedAt }
     this.listeners = new Set();
   }
 
@@ -39,6 +44,8 @@ export class Repository {
     ]);
     this.entries = new Map(entries.map((e) => [e.id, e]));
     this.categories = new Map(categories.map((c) => [c.id, c]));
+    const favs = (await this.adapter.getMeta(VERSE_FAVORITES_KEY)) || [];
+    this.verseFavorites = new Map(favs.map((f) => [f.verseId, f]));
     const missing = builtInCategoryRecords(this.ownerId).filter((c) => !this.categories.has(c.id));
     if (missing.length) await this._put('categories', missing);
   }
@@ -243,6 +250,30 @@ export class Repository {
     this._emit();
   }
 
+  // ---------- Favorite verses ----------
+  // Un-hearting keeps a record ({ favorite: false }) instead of erasing it,
+  // so merging an older backup can't bring a removed favorite back.
+
+  isFavoriteVerse(verseId) {
+    return this.verseFavorites.get(verseId)?.favorite === true;
+  }
+
+  favoriteVerseIds() {
+    return [...this.verseFavorites.values()].filter((f) => f.favorite).map((f) => f.verseId);
+  }
+
+  async toggleFavoriteVerse(verseId) {
+    const favorite = !this.isFavoriteVerse(verseId);
+    this.verseFavorites.set(verseId, { verseId, favorite, updatedAt: nowISO() });
+    await this._saveVerseFavorites();
+    this._emit();
+    return favorite;
+  }
+
+  async _saveVerseFavorites() {
+    await this.adapter.setMeta(VERSE_FAVORITES_KEY, [...this.verseFavorites.values()]);
+  }
+
   // ---------- Backup ----------
 
   exportBackup() {
@@ -251,6 +282,7 @@ export class Repository {
     return buildBackup({
       entries: [...this.entries.values()],
       categories: [...this.categories.values()],
+      verseFavorites: [...this.verseFavorites.values()],
       appVersion: this.appVersion,
     });
   }
@@ -270,6 +302,7 @@ export class Repository {
     if (mode === 'replace') {
       await this.adapter.replaceAll('categories', this.ownerId, parsed.categories);
       await this.adapter.replaceAll('entries', this.ownerId, parsed.entries);
+      await this.adapter.setMeta(VERSE_FAVORITES_KEY, parsed.verseFavorites);
       await this._load();
       await this._fixOrphans();
       this._emit();
@@ -309,6 +342,18 @@ export class Repository {
       }
     }
     if (entryWrites.length) await this._put('entries', entryWrites);
+
+    // Favorite verses: the most recent heart or un-heart wins.
+    let favsChanged = false;
+    for (const inc of parsed.verseFavorites) {
+      const local = this.verseFavorites.get(inc.verseId);
+      if (!local || inc.updatedAt > local.updatedAt) {
+        this.verseFavorites.set(inc.verseId, inc);
+        favsChanged = true;
+      }
+    }
+    if (favsChanged) await this._saveVerseFavorites();
+
     await this._fixOrphans();
     this._emit();
     return { added, updated, unchanged };

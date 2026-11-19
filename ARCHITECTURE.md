@@ -33,12 +33,14 @@ Entry:
 
 Categories have the same `id` / `ownerId` / timestamp / `deletedAt` fields, plus `name` and `builtIn`.
 
-Backups are `{ format: "intreaty-backup", version, appVersion, exportedAt, data: { entries, categories } }`. Raising `version` requires a step in `migrate()` in `backup.js`.
+Favorite verses (added in 1.2.0) are records of `{ verseId, favorite, updatedAt }`, kept in the `meta` store under `verseFavorites`. Un-hearting sets `favorite: false` instead of erasing, so merges work like entries (newest `updatedAt` wins). Verse ids live in `js/data/verses.js` and must never change. With accounts, these become a per-user table.
+
+Backups are `{ format: "intreaty-backup", version, appVersion, exportedAt, data: { entries, categories, verseFavorites } }`. `verseFavorites` is optional, so older backups still load. Raising `version` requires a step in `migrate()` in `backup.js`.
 
 ## Planned features
 
 ### "Pray for Today"
-This needs no new data. Add a view that picks a few active requests per day. A simple approach is to rotate by the day number so each request comes up in turn, and to favour requests not shown recently. Store "last shown" dates with `setMeta`, or add an optional `lastPrayedAt` field to entries (an additive change, no migration needed).
+The verse of the day (`verseForDay` in `verses.js`) can sit at the top of this screen. This needs no new data. Add a view that picks a few active requests per day. A simple approach is to rotate by the day number so each request comes up in turn, and to favour requests not shown recently. Store "last shown" dates with `setMeta`, or add an optional `lastPrayedAt` field to entries (an additive change, no migration needed).
 
 ### Daily reminder notifications
 - Reminders that fire at a set time while the app is closed need **Web Push**, which needs a small server (or a hosted function) to send the push each day.

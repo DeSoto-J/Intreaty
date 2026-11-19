@@ -4,7 +4,7 @@
 // IMPORTANT: when you publish a change, raise VERSION below (and APP_VERSION
 // in js/version.js). That's how phones know a new version exists.
 
-const VERSION = '1.1.2';
+const VERSION = '1.2.0';
 const CACHE = `intreaty-${VERSION}`;
 
 const FILES = [
@@ -18,6 +18,7 @@ const FILES = [
   './js/data/models.js',
   './js/data/repository.js',
   './js/data/backup.js',
+  './js/data/verses.js',
   './js/storage/local-adapter.js',
   './js/ui/dom.js',
   './js/ui/icons.js',
@@ -26,6 +27,7 @@ const FILES = [
   './js/ui/list-view.js',
   './js/ui/entry-sheets.js',
   './js/ui/settings-view.js',
+  './js/ui/verse-sheet.js',
   './icons/icon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
