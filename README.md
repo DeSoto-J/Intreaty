@@ -8,6 +8,7 @@ A simple, private prayer list that installs to your phone's home screen.
 - **Star** important entries and sort them to the top with **Starred first**
 - Mark a request **answered**, write down how, and add it to Thanksgivings
 - **Verse of the day**: a King James verse about prayer, with **Another verse**, Copy/Share, and a heart to save favorites (saved verses come back more often)
+- **Know Jesus**: a short guide with King James verses on how to be saved and know heaven is your home, with a prayer and a link to share it
 - Works offline, has light and dark mode, and saves everything on your device
 - Save and restore a backup file
 

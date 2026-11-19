@@ -421,6 +421,7 @@ svg { display: block; }
   border-radius: 14px;
   transition: color 0.2s;
 }
+.tab > span:last-child { white-space: nowrap; }
 .tab-icon {
   width: 52px; height: 28px;
   display: grid; place-items: center;
@@ -674,6 +675,67 @@ svg { display: block; }
   font-size: 0.98rem; line-height: 1.5; color: var(--text-2);
 }
 .about-verse figcaption { margin-top: 4px; font-size: 0.8rem; letter-spacing: 0.04em; }
+
+/* ---------- Know Jesus ---------- */
+.kj-intro {
+  margin: 0 0 26px;
+  padding: 20px;
+  border-radius: var(--radius);
+  background:
+    radial-gradient(120% 90% at 100% 0%, var(--bg-glow), transparent 60%),
+    var(--accent-soft);
+  font-size: 1.05rem; line-height: 1.6;
+}
+.kj-intro p { margin: 0; }
+.kj-intro p + p { margin-top: 10px; color: var(--text-2); }
+.kj-intro strong { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 600; display: block; margin-bottom: 6px; line-height: 1.35; }
+.kj-step { display: flex; gap: 14px; margin-bottom: 26px; }
+.kj-num {
+  flex: none;
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--accent); color: var(--on-accent);
+  font-family: var(--font-serif); font-weight: 700; font-size: 1.05rem;
+}
+.kj-body { flex: 1; min-width: 0; }
+.kj-title { margin: 4px 0 12px; font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600; line-height: 1.25; }
+.kj-verse {
+  margin: 0 0 10px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+}
+.kj-verse p { margin: 0; font-family: var(--font-serif); font-size: 1.05rem; line-height: 1.55; }
+.kj-verse cite { display: block; margin-top: 8px; font-style: normal; font-weight: 700; font-size: 0.88rem; color: var(--accent-strong); }
+.kj-note { margin: 0 0 12px; color: var(--text-2); font-style: italic; }
+.kj-prayer {
+  padding: 18px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+}
+.kj-prayer p { margin: 0; font-family: var(--font-serif); font-size: 1.08rem; line-height: 1.65; }
+.kj-prayed { width: 100%; margin-top: 14px; }
+.kj-small { margin: 8px 0 0; text-align: center; color: var(--muted); font-size: 0.84rem; }
+.kj-saved {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--answered-soft);
+  display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: start;
+}
+.kj-saved > svg { width: 22px; height: 22px; color: var(--answered); fill: currentColor; margin-top: 1px; }
+.kj-saved p { margin: 0; }
+.kj-saved .link-btn { grid-column: 2; margin-top: 2px; color: var(--answered); }
+.kj-next { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.kj-next li { display: flex; gap: 10px; align-items: flex-start; }
+.kj-next li > svg { flex: none; width: 20px; height: 20px; margin-top: 2px; color: var(--answered); }
+.kj-next strong { display: block; }
+.kj-next span { color: var(--text-2); }
+.kj-next strong { color: var(--text); }
+.kj-share { margin-top: 6px; }
 
 /* ---------- Verse of the day ---------- */
 .top-actions { display: flex; align-items: center; gap: 8px; }

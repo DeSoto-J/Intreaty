@@ -16,6 +16,7 @@ import { renderList, listKey } from './ui/list-view.js';
 import { openDetail, openForm } from './ui/entry-sheets.js';
 import { renderSettings, bindSettings } from './ui/settings-view.js';
 import { openVerseOfDay, updateVerseDot } from './ui/verse-sheet.js';
+import { renderJesus, bindJesus } from './ui/jesus-view.js';
 import * as pwa from './pwa.js';
 import { APP_VERSION } from './version.js';
 
@@ -45,6 +46,7 @@ function parseRoute() {
   const [view, sub] = location.hash.replace(/^#\/?/, '').split('/');
   if (view === 'thanks') return { view: 'thanks' };
   if (view === 'settings') return { view: 'settings' };
+  if (view === 'jesus') return { view: 'jesus' };
   return { view: 'requests', status: sub === 'answered' ? 'answered' : 'active' };
 }
 
@@ -55,11 +57,14 @@ function render() {
     else t.removeAttribute('aria-current');
   });
   const isSettings = view === 'settings';
-  $('#view-list').hidden = isSettings;
+  const isJesus = view === 'jesus';
+  $('#view-list').hidden = isSettings || isJesus;
   $('#view-settings').hidden = !isSettings;
-  $('#add-btn').hidden = isSettings;
+  $('#view-jesus').hidden = !isJesus;
+  $('#add-btn').hidden = isSettings || isJesus;
   $('#add-btn').setAttribute('aria-label', view === 'thanks' ? 'Add a thanksgiving' : 'Add a prayer request');
   if (isSettings) renderSettings(ctx);
+  else if (isJesus) renderJesus(ctx);
   else renderList(ctx);
 }
 
@@ -115,6 +120,7 @@ function bindEvents() {
   });
 
   bindSettings(ctx);
+  bindJesus(ctx);
 }
 
 function maybeShowInstallTip() {
