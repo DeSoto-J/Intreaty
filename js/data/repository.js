@@ -113,6 +113,27 @@ export class Repository {
     return entry;
   }
 
+  // Adds many entries at once (from a pasted list), saved and redrawn in one go.
+  async addEntries(list) {
+    const entries = list
+      .filter((fields) => cleanText(fields.title, LIMITS.title))
+      .map((fields) => createEntry({ ...fields, categoryId: this._validCategory(fields.categoryId) }, this.ownerId));
+    if (!entries.length) throw new Error('There’s nothing to add.');
+    await this._put('entries', entries);
+    this._emit();
+    return entries;
+  }
+
+  // Undo for addEntries.
+  async deleteEntries(ids) {
+    const ts = nowISO();
+    const records = ids.map((id) => this.getEntry(id)).filter(Boolean)
+      .map((e) => ({ ...e, deletedAt: ts, updatedAt: ts }));
+    if (!records.length) return;
+    await this._put('entries', records);
+    this._emit();
+  }
+
   async updateEntry(id, changes) {
     const cur = this.getEntry(id);
     if (!cur) throw new Error('That entry no longer exists.');

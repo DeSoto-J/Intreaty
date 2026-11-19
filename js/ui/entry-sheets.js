@@ -6,6 +6,7 @@ import { esc, formatDate, categoryColor, toast } from './dom.js';
 import { icon } from './icons.js';
 import { openSheet, closeSheet } from './sheet.js';
 import { requestPersistence } from '../pwa.js';
+import { openPaste } from './paste-sheet.js';
 
 const closeBtn = `<button type="button" class="icon-btn close-btn" data-close aria-label="Close">${icon('close')}</button>`;
 
@@ -114,6 +115,7 @@ export function openForm(ctx, { id, kind } = {}) {
         <input class="input" id="f-title" name="title" maxlength="${LIMITS.title}" autocomplete="off" enterkeyhint="next"
           value="${esc(e?.title || '')}" placeholder="${isThanks ? 'e.g. A safe trip home' : "e.g. Mom's surgery on Friday"}">
       </div>
+      ${e ? '' : `<button type="button" class="link-btn paste-link" id="paste-open">${icon('squarePlus')}Add several at once</button>`}
       <div class="field">
         <label for="f-details">Details <span class="lock">(optional)</span></label>
         <textarea class="textarea" id="f-details" name="details" maxlength="${LIMITS.details}" placeholder="Anything you want to remember…">${esc(e?.details || '')}</textarea>
@@ -159,6 +161,13 @@ export function openForm(ctx, { id, kind } = {}) {
       const showError = (msg) => { errorEl.textContent = msg; errorEl.hidden = !msg; };
 
       if (!e) box.querySelector('#f-title').focus({ preventScroll: true });
+
+      // Anything already typed in the title box becomes the first line of the list.
+      box.querySelector('#paste-open')?.addEventListener('click', () => openPaste(ctx, {
+        kind: k,
+        categoryId: select.value === '__new' ? lastCat : select.value,
+        text: box.querySelector('#f-title').value.trim(),
+      }));
 
       select.addEventListener('change', () => {
         if (select.value === '__new') {
