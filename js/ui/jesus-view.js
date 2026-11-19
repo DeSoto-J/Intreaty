@@ -94,7 +94,7 @@ export function renderJesus({ repo }) {
 
     <div class="kj-intro">
       <p><strong>God wants to have a personal relationship with you.</strong> He made you, He loves you, and He wants you to spend forever with Him in heaven.</p>
-      <p>The Bible shows how you can know Him, and how you can know <em>for sure</em> that heaven will be your home. Take a few minutes to read these steps.</p>
+      <p>The Bible shows how you can know Him. Please take a few moments to read, straight from His Word, how you can know <em>for sure</em> that you’re on your way to heaven.</p>
     </div>
 
     ${STEPS.map((s) => stepHTML(++n, s.title, s.verses.map(verseHTML).join(''))).join('')}
