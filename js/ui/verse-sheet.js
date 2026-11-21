@@ -48,7 +48,7 @@ function nextRandom(excludeId) {
 }
 
 // Copies text, with an older fallback for browsers that block the clipboard API.
-async function copyText(text, container) {
+export async function copyText(text, container = document.body) {
   try {
     await navigator.clipboard.writeText(text);
     return;

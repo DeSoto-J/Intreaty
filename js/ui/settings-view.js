@@ -1,5 +1,5 @@
-// settings-view.js — the Settings screen: appearance, categories, backup,
-// installing the app, feedback, and about.
+// settings-view.js — the Settings screen: sharing the app, appearance,
+// categories, backup, installing the app, feedback, and about.
 
 import { Kind } from '../data/models.js';
 import { parseBackup, backupFileName, BackupError } from '../data/backup.js';
@@ -11,6 +11,7 @@ import * as pwa from '../pwa.js';
 import { APP_VERSION } from '../version.js';
 import { getVerse, APP_VERSE_ID } from '../data/verses.js';
 import { openFeedback } from './feedback-sheet.js';
+import { copyText } from './verse-sheet.js';
 
 const THEMES = [['system', 'Automatic'], ['light', 'Light'], ['dark', 'Dark']];
 
@@ -56,6 +57,14 @@ export function renderSettings(ctx) {
       <p class="eyebrow">Make it yours</p>
       <h1 class="view-title" id="settings-title">Settings</h1>
     </div>
+
+    <section class="group">
+      <h2 class="group-title">Share Intreaty</h2>
+      <div class="panel panel-pad">
+        <p class="note">Know someone who would like a simple, private prayer list? Send them a link by text, email or any app.</p>
+        <button type="button" class="btn btn-primary" data-set="share-app" style="width:100%">${icon('share')}Share Intreaty</button>
+      </div>
+    </section>
 
     <section class="group">
       <h2 class="group-title">Appearance</h2>
@@ -132,6 +141,23 @@ export function renderSettings(ctx) {
 }
 
 // ---------- Actions ----------
+
+// Shares the app's own address (never anything about the person or their
+// prayers). Uses the phone's share menu; otherwise copies the link.
+async function shareApp() {
+  const url = new URL('./', location.href).href;
+  const text = 'I’ve been using Intreaty, a simple, private prayer list for your phone. It’s free and keeps your prayers on your device.';
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Intreaty', text, url });
+    } catch (err) {
+      if (err.name !== 'AbortError') throw err;
+    }
+    return;
+  }
+  await copyText(`${text} ${url}`);
+  toast('Link copied. Paste it into a text or email.');
+}
 
 async function exportBackup(ctx) {
   const { repo, state } = ctx;
@@ -245,6 +271,8 @@ export function bindSettings(ctx) {
       pwa.promptInstall();
     } else if (t.dataset.set === 'feedback') {
       openFeedback();
+    } else if (t.dataset.set === 'share-app') {
+      shareApp().catch(() => toast('Could not share the link.'));
     } else if (t.dataset.catRename) {
       openRename(ctx, t.dataset.catRename);
     } else if (t.dataset.catDelete) {
