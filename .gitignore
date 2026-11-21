@@ -6,3 +6,4 @@ node_modules/
 
 # Never commit prayer backups — they're private.
 intreaty-backup-*.json
+intreaty-backup-*.txt

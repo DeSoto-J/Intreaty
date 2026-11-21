@@ -35,7 +35,9 @@ Categories have the same `id` / `ownerId` / timestamp / `deletedAt` fields, plus
 
 Favorite verses (added in 1.2.0) are records of `{ verseId, favorite, updatedAt }`, kept in the `meta` store under `verseFavorites`. Un-hearting sets `favorite: false` instead of erasing, so merges work like entries (newest `updatedAt` wins). Verse ids live in `js/data/verses.js` and must never change. With accounts, these become a per-user table.
 
-Backups are `{ format: "intreaty-backup", version, appVersion, exportedAt, data: { entries, categories, verseFavorites } }`. `verseFavorites` is optional, so older backups still load. Raising `version` requires a step in `migrate()` in `backup.js`.
+Since 1.7.0, backups are a readable text file (`intreaty-backup-YYYY-MM-DD.txt`): a header with the save time, then `PRAYER REQUESTS`, `ANSWERED PRAYERS` and `THANKSGIVINGS` sections, entries grouped under `[Category]` headings as `• ★ Title` lines with indented `Added:`, `Answered:`, `Notes:`, `How God answered:` and `Also in Thanksgivings` lines, then optional `YOUR CATEGORIES` and `SAVED VERSES` sections. `parseTextBackup` in `backup.js` reads the same words back. The file has no ids, so merging a text backup matches entries by kind + wording + date and leaves matches (including ones deleted here) untouched; Replace works as before. Deleted entries are not written.
+
+Older backups are JSON, `{ format: "intreaty-backup", version, appVersion, exportedAt, data: { entries, categories, verseFavorites } }`, and still restore with the id-based, newest-`updatedAt`-wins merge. JSON is no longer written.
 
 ## Planned features
 

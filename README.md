@@ -10,7 +10,7 @@ A simple, private prayer list that installs to your phone's home screen.
 - **Verse of the day**: a King James verse about prayer, with **Another verse**, Copy/Share, and a heart to save favorites (saved verses come back more often)
 - **Know Jesus**: a short guide with King James verses on how to be saved and know heaven is your home, with a prayer and a link to share it
 - Works offline, has light and dark mode, and saves everything on your device
-- Save and restore a backup file
+- Save a backup that reads like a list (requests, answered prayers and thanksgivings under their categories) and restore from it. Older `.json` backups still restore
 - **Share Intreaty** at the top of Settings: sends the app's link by text, email or any app (only the link, nothing about the person)
 - **Send feedback** from Settings: report a problem or suggest an idea, no email or sign-in needed (sent through Web3Forms to the Intreaty feedback inbox; only what the person types, plus the app version and phone type, is sent)
 

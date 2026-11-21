@@ -101,7 +101,7 @@ export function renderSettings(ctx) {
     <section class="group">
       <h2 class="group-title">Backup</h2>
       <div class="panel panel-pad">
-        <p class="note">Your prayers are saved <strong>only on this device</strong>. Save a backup file now and then (to Files, Google Drive or email) so you never lose them.</p>
+        <p class="note">Your prayers are saved <strong>only on this device</strong>. Save a backup file now and then (to Files, Google Drive or email) so you never lose them. It’s a simple list you can open and read, and Intreaty can restore everything from it.</p>
         <p class="note">${last ? `Last backup: <strong>${timeAgo(last)}</strong>.` : 'No backup saved yet.'}${stale ? ' It’s a good time to save one.' : ''}</p>
         <div class="btn-stack">
           <button type="button" class="btn btn-primary" data-set="export">${icon('download')}Save a backup</button>
@@ -169,9 +169,9 @@ async function shareApp() {
 
 async function exportBackup(ctx) {
   const { repo, state } = ctx;
-  const json = JSON.stringify(repo.exportBackup(), null, 2);
+  const text = repo.exportTextBackup();
   const name = backupFileName();
-  const file = new File([json], name, { type: 'application/json' });
+  const file = new File([text], name, { type: 'text/plain' });
   const onPhone = matchMedia('(pointer: coarse)').matches;
   let saved = false;
   if (onPhone && navigator.canShare?.({ files: [file] })) {

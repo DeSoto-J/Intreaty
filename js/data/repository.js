@@ -12,7 +12,7 @@ import {
   Kind, Status, LOCAL_OWNER_ID, FALLBACK_CATEGORY_ID, BUILT_IN_CATEGORIES, LIMITS,
   createEntry, createCategory, builtInCategoryRecords, cleanText, isDateString, nowISO, todayLocal,
 } from './models.js';
-import { buildBackup } from './backup.js';
+import { formatTextBackup } from './backup.js';
 
 // Favorite verses are a short list, so they're kept in the "meta" store.
 // With accounts they would become their own table, like entries.
@@ -297,14 +297,13 @@ export class Repository {
 
   // ---------- Backup ----------
 
-  exportBackup() {
-    // Deleted records are included (marked deleted) so that merging this
-    // backup elsewhere keeps deletions deleted.
-    return buildBackup({
-      entries: [...this.entries.values()],
-      categories: [...this.categories.values()],
-      verseFavorites: [...this.verseFavorites.values()],
-      appVersion: this.appVersion,
+  // The readable backup file's text, in the same order as the app shows things.
+  exportTextBackup(savedAt = new Date()) {
+    return formatTextBackup({
+      entries: this.listEntries(),
+      categories: this.listCategories(),
+      verseFavoriteIds: this.favoriteVerseIds(),
+      savedAt,
     });
   }
 
@@ -349,7 +348,12 @@ export class Repository {
 
     let added = 0, updated = 0, unchanged = 0;
     const entryWrites = [];
-    for (const raw of parsed.entries) {
+
+    if (parsed.source === 'text') {
+      const r = this._mergeTextEntries(parsed.entries, idMap);
+      ({ added, unchanged } = r);
+      entryWrites.push(...r.writes);
+    } else for (const raw of parsed.entries) {
       const inc = idMap.has(raw.categoryId) ? { ...raw, categoryId: idMap.get(raw.categoryId) } : raw;
       const local = this.entries.get(inc.id);
       if (!local) {
@@ -378,6 +382,44 @@ export class Repository {
     await this._fixOrphans();
     this._emit();
     return { added, updated, unchanged };
+  }
+
+  // Merging a readable (text) backup. It has no hidden ids, so an entry is
+  // recognised by its type, wording and date. One that's already here (even
+  // if it was deleted here) is left exactly as it is; anything else is added.
+  _mergeTextEntries(incoming, catIdMap) {
+    const key = (e) => `${e.kind}|${e.title.trim().toLocaleLowerCase()}|${e.date}`;
+    const localByKey = new Map();
+    for (const e of this.entries.values()) if (!localByKey.has(key(e))) localByKey.set(key(e), e);
+
+    const matched = new Map(); // incoming id -> local entry
+    const fresh = [];
+    for (const raw of incoming) {
+      const local = localByKey.get(key(raw));
+      if (local) matched.set(raw.id, local);
+      else fresh.push(idMap(raw, catIdMap));
+    }
+
+    // Keep answered prayers connected to their thanksgivings. If the partner
+    // is already on this device, connect to it when it isn't linked yet.
+    const writes = [];
+    const freshIds = new Set(fresh.map((e) => e.id));
+    for (const e of fresh) {
+      if (!e.linkedEntryId || freshIds.has(e.linkedEntryId)) continue;
+      const partner = matched.get(e.linkedEntryId);
+      if (partner && !partner.deletedAt && !(partner.linkedEntryId && this.getEntry(partner.linkedEntryId))) {
+        e.linkedEntryId = partner.id;
+        writes.push({ ...partner, linkedEntryId: e.id, updatedAt: nowISO() });
+      } else {
+        e.linkedEntryId = null;
+      }
+    }
+    writes.push(...fresh);
+    return { writes, added: fresh.length, unchanged: matched.size };
+
+    function idMap(e, map) {
+      return map.has(e.categoryId) ? { ...e, categoryId: map.get(e.categoryId) } : e;
+    }
   }
 
   // Any entry pointing at a category that doesn't exist goes to "Other".
