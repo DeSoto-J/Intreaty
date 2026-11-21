@@ -541,6 +541,12 @@ svg { display: block; }
 .inline-add .btn { min-height: 48px; padding: 10px 16px; }
 .form-error { color: var(--danger); font-size: 0.88rem; margin: -6px 0 12px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.field .segmented { margin: 0; }
+.optional { font-weight: 400; color: var(--muted); letter-spacing: 0; }
+
+/* Send feedback */
+.fb-trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.fb-privacy { margin-top: -4px; }
 
 /* Add several at once */
 .paste-link { margin: -6px 0 14px; }

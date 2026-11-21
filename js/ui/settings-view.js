@@ -1,5 +1,5 @@
 // settings-view.js — the Settings screen: appearance, categories, backup,
-// installing the app, and about.
+// installing the app, feedback, and about.
 
 import { Kind } from '../data/models.js';
 import { parseBackup, backupFileName, BackupError } from '../data/backup.js';
@@ -10,6 +10,7 @@ import { getThemePref, setThemePref } from './theme.js';
 import * as pwa from '../pwa.js';
 import { APP_VERSION } from '../version.js';
 import { getVerse, APP_VERSE_ID } from '../data/verses.js';
+import { openFeedback } from './feedback-sheet.js';
 
 const THEMES = [['system', 'Automatic'], ['light', 'Light'], ['dark', 'Dark']];
 
@@ -101,6 +102,14 @@ export function renderSettings(ctx) {
     </section>
 
     ${installSection()}
+
+    <section class="group">
+      <h2 class="group-title">Feedback</h2>
+      <div class="panel panel-pad">
+        <p class="note">Found a problem or have an idea? Send it straight to the maker of Intreaty. No email or sign-in needed.</p>
+        <button type="button" class="btn btn-secondary" data-set="feedback" style="width:100%">${icon('message')}Send feedback</button>
+      </div>
+    </section>
 
     <section class="group">
       <h2 class="group-title">Your data</h2>
@@ -234,6 +243,8 @@ export function bindSettings(ctx) {
       fileInput.click();
     } else if (t.dataset.set === 'install') {
       pwa.promptInstall();
+    } else if (t.dataset.set === 'feedback') {
+      openFeedback();
     } else if (t.dataset.catRename) {
       openRename(ctx, t.dataset.catRename);
     } else if (t.dataset.catDelete) {
