@@ -144,18 +144,26 @@ export function renderSettings(ctx) {
 
 // Shares the app's own address (never anything about the person or their
 // prayers). Uses the phone's share menu; otherwise copies the link.
+//
+// The message is kept short and uses only plain characters (a straight
+// apostrophe, no curly quotes) so it fits in ONE ordinary text message
+// when a phone falls back from chat to SMS. The link is part of the text,
+// rather than a separate "url", so every app shows it the same way.
+export function shareMessage(url = new URL('./', location.href).href) {
+  return `I've been using Intreaty, a free, private prayer list for your phone: ${url}`;
+}
+
 async function shareApp() {
-  const url = new URL('./', location.href).href;
-  const text = 'I’ve been using Intreaty, a simple, private prayer list for your phone. It’s free and keeps your prayers on your device.';
+  const text = shareMessage();
   if (navigator.share) {
     try {
-      await navigator.share({ title: 'Intreaty', text, url });
+      await navigator.share({ title: 'Intreaty', text });
     } catch (err) {
       if (err.name !== 'AbortError') throw err;
     }
     return;
   }
-  await copyText(`${text} ${url}`);
+  await copyText(text);
   toast('Link copied. Paste it into a text or email.');
 }
 
